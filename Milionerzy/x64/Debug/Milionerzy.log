@@ -1,0 +1,4 @@
+﻿  Milionerzy.cpp
+E:\milionerzy\Milionerzy\Milionerzy\Milionerzy.cpp(33,19): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
+E:\milionerzy\Milionerzy\Milionerzy\Milionerzy.cpp(162,19): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
+  Milionerzy.vcxproj -> E:\milionerzy\Milionerzy\x64\Debug\Milionerzy.exe
