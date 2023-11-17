@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <algorithm>
+#include <list>
 
 using namespace std;
 
@@ -23,16 +24,17 @@ private:
     int wygrana;
     bool osiagnieto_gwarantowana_wygrana = false;
     int wygrana_gwarantowana = 0; // Zmienna do gwarantowanej wygranej
-    vector<int> pulaNagrod;
+    list<int> pulaNagrod;
 
 public:
     Milionerzy()
     {
         aktualne_pytanie = 0;
         wygrana = 0;
+        wygrana_gwarantowana = 0;
         srand(time(0));
 
-        // Pytania, odpowiedzi i wygrane
+        // Pytania i odpowiedzi
         Pytanie q1;
         q1.pytanie = "Ktory gaz stanowi wiekszosc atmosfery Ziemi?";
         q1.opcje = { "Azot", "Tlen", "Argon", "Wodor" };
@@ -180,8 +182,6 @@ public:
 
     void mechanika()
     {
-        int ilosc_udzielonych_odpowiedzi = 0; // Sprawdza ile udzielono odpowiedzi
-
         while (aktualne_pytanie < pytania.size())
         {
             wyświetl_pytanie();
@@ -197,23 +197,26 @@ public:
 
             if (czy_odpowiedź_poprawna(odpowiedź))
             {
-                wygrana = pulaNagrod[aktualne_pytanie];
+                wygrana = *next(pulaNagrod.begin(), aktualne_pytanie);
                 if (wygrana == 1000 || wygrana == 40000)
                 {
                     osiagnieto_gwarantowana_wygrana = true;
                     wygrana_gwarantowana = wygrana; // aktualizuje gwarantowaną wygraną
                 }
-                cout << "Poprawna odpowiedz! Obecnie posiadasz " << wygrana << " zl!" << endl;
+                
+                if (aktualne_pytanie <= 10)
+                {
+                    cout << "Poprawna odpowiedz! Obecnie posiadasz " << wygrana << " zl!" << endl;
+                }
             }
             else
             {
                 wygrana = 0;
-                cout << "Niestety, jest to bledna odpowiedz. Konczysz gre z " << wygrana_gwarantowana << " zl." << endl; // Wyświetla gwarantowaną wygraną
+                cout << "Niestety, jest to bledna odpowiedz. Konczysz gre z " << wygrana_gwarantowana << " zl." << endl; // Wyświetla gwarantowaną wygraną po błędnej odpowiedzi
                 break;
             }
 
             aktualne_pytanie++;
-            ilosc_udzielonych_odpowiedzi++;
 
             // Sprawdza, czy osiągnięto gwarantowaną wygraną
             if (wygrana == 1000 || wygrana == 40000)
@@ -222,17 +225,46 @@ public:
                 wygrana_gwarantowana = wygrana;
             }
 
-            if (ilosc_udzielonych_odpowiedzi == 12) // Po odpowiedzeniu na 12 pytań, zakończ grę
+            if (aktualne_pytanie == 12) //po odpowiedzeniu na 12 pytań zakończ grę
             {
-                cout << "Odpowiedziales na 12 pytan! Gratulacje!" << endl;
+                cout << "Gratulacje wygrywasz " << wygrana << " zl!" << endl;
                 break;
             }
+
         }
 
-        
-        
             cout << "\nDziekuje za gre!" << endl;
         
+    }
+
+    void wyplac_wygrana()
+    {
+        int wyplata;
+        cout << "\nWybierz, jak chcesz wybrac swoja wygrana:" << endl;
+        cout << "1. Przelew bankowy" << endl;
+        cout << "2. Gotowka" << endl;
+        cout << "3. Czek" << endl;
+        cout << "Wybierz opcje (1-3): ";
+        int opcja;
+        cin >> opcja;
+
+        switch (opcja)
+        {
+        case 1:
+            wyplata = wygrana;
+            cout << "Twoja wygrana " << wyplata << " zl zostanie przelana na konto bankowe." << endl;
+            break;
+        case 2:
+            wyplata = wygrana;
+            cout << "Odbierz swoja wygrana gotowka w kasie." << endl;
+            break;
+        case 3:
+            wyplata = wygrana;
+            cout << "Otrzymasz czek na kwote " << wyplata << " zl." << endl;
+            break;
+        default:
+            cout << "Niepoprawny wybor. Wybierz opcję 1, 2 lub 3." << endl;
+        }
     }
 };
 
@@ -241,6 +273,7 @@ int main()
     Milionerzy game;
     cout << "Witaj w grze Milionerzy!" << endl;
     game.mechanika();
+    game.wyplac_wygrana();
 
     return 0;
 }
